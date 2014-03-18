@@ -972,8 +972,8 @@ class FZF
         },
         ctrl(:a) => proc { cursor = 0; nil },
         ctrl(:e) => proc { cursor = input.length; nil },
-        ctrl(:j) => proc { vselect { |v| v - @rev_dir } },
-        ctrl(:k) => proc { vselect { |v| v + @rev_dir } },
+        ctrl(:k) => proc { vselect { |v| v - @rev_dir } },
+        ctrl(:i) => proc { vselect { |v| v + @rev_dir } },
         ctrl(:w) => proc {
           pcursor = cursor
           backword.call
@@ -982,7 +982,7 @@ class FZF
         },
         ctrl(:y) => proc { actions[:default].call yanked },
         ctrl(:h) => proc { input[cursor -= 1] = '' if cursor > 0 },
-        ctrl(:i) => proc { |o|
+        ctrl(:j) => proc { |o|
           if @multi && sel = pick
             sync do
               if @selects.has_key? sel
@@ -1028,7 +1028,7 @@ class FZF
                 case event
                 when :click
                   vselect { |_| tv }
-                  actions[ctrl(:i)].call(:sclick) if shift
+                  actions[ctrl(:j)].call(:sclick) if shift
                   mouse_event.v = tv
                 when :release
                   if !shift && mouse_event.double?(tv)
@@ -1038,16 +1038,16 @@ class FZF
               end
             when :scroll
               diff, shift = val.values_at :diff, :shift
-              actions[ctrl(:i)].call(:sclick) if shift
-              actions[ctrl(diff > 0 ? :j : :k)].call
+              actions[ctrl(:j)].call(:sclick) if shift
+              actions[ctrl(diff > 0 ? :k : :i)].call
             end
             nil
           end
         }
       }
-      actions[ctrl(:p)] = actions[ctrl(:k)]
-      actions[ctrl(:n)] = actions[ctrl(:j)]
-      actions[:stab]    = actions[ctrl(:i)]
+      actions[ctrl(:p)] = actions[ctrl(:i)]
+      actions[ctrl(:n)] = actions[ctrl(:k)]
+      actions[:stab]    = actions[ctrl(:j)]
       actions[127]      = actions[ctrl(:h)]
       actions[ctrl(:q)] = actions[ctrl(:g)] = actions[ctrl(:c)] = actions[:esc]
 
